@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>creator</title>
+<link rel="stylesheet" href="asset/css/smui.css">
+<link rel="stylesheet" href="css/creator.css">
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/store.js"></script>
+<style>
+  html,body{
+    height: 100%;
+    overflow: hidden;
+  }
+  
+</style>
+<script>
+$(function(){
+  /*dropdown-menu*/
+  $(".dropdown > a").each(function(){
+    $(this).click(function(){
+      $(this).parent().toggleClass("open")
+      $(".mask-c").toggle()
+    })
+  })
+  
+	//hide mask,hide dropdown
+	$(".mask-c, .dropdown-menu li").on("click",function(e){
+			e.stopPropagation()
+		  $(".dropdown").removeClass("open")
+			$(".mask-c").hide()
+	})
+  
+  //choose deivce
+  $("#device .dropdown-menu li").on("click",function(){
+    var deviceType = $(this).text()
+    var deviceWidth = $(this).attr("data-width")
+    var deviceHeight = $(this).attr("data-height")
+    $("#device a").text(deviceType)
+    $("#simulator").css({ "width": deviceWidth })
+    $("#simulator").css({ "height": deviceHeight })
+  })
+  //orientation
+  $("#orientation").on("click",function(){
+    $("#simulator").css({ "width": $("#simulator").height() + 'px' })
+    $("#simulator").css({ "height": $("#simulator").width() + 'px' })
+  })
+  
+})
+</script>
+</head>
+<body>
+<!--header-->
+<header>
+  <div class="header-left">
+    <i class="logo icon-h"></i>
+    <span>Smui creator</span>
+    <button class="save icon-h" title="save"></button>
+  </div>
+  <div class="navbar">
+    <a href="#" class="build active" title="creator"></a>
+    <a href="#" class="preview" title="preview"></a>
+  </div>
+  <div class="header-right">
+    <ul>
+      <li><i class="theme icon-h" title="themes"></i></li>
+      <li><i class="help icon-h"  title="help"></i></li>
+      <li><i class="user icon-h"  title="user"></i></li>
+    </ul>
+  </div>
+</header>
+<!--//header-->
+<!--container-->
+<section class="container" id="app">
+  <aside class="aside-bar">
+    <!--pages-->
+    <div class="pages">
+      <h3 class="title">Pages <button><i class="new-page"></i>Add Page</button></h3>
+      <div class="page-list">
+        <ul>
+          <li class="active">
+            <a href="#"><i class="icon-page"></i>index <span class="del-page"></span></a>
+          </li>
+          <li>
+            <a href="#"><i class="icon-page"></i>list</a>
+          </li>
+          <li>
+            <a href="#"><i class="icon-page"></i>article</a>
+          </li>
+          <li>
+            <a href="#"><i class="icon-page"></i>news</a>
+          </li>
+          <li>
+            <a href="#"><i class="icon-page"></i>contact</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!--//pages-->
+    <!--component-->
+    <div class="component-wrap">
+      <h3 class="title">Components</h3>
+      <div class="component">
+        <ul>
+          <li><i class="heading"></i>Heading</li>
+          <li @click="addBtnComp('btnComp', 'warning', '警告')"><i class="button"></i>Button</li>
+          <li @click="addHtmlComp('htmlComp')"><i class="button-bar"></i>Button Bar</li>
+          <li><i class="checkbox"></i>Checkbox</li>
+          <li><i class="radio"></i>Radio</li>
+          <li><i class="input"></i>Input</li>
+          <li><i class="select"></i>Select</li>
+          <li><i class="toggle"></i>Toggle</li>
+          <li><i class="search"></i>Search</li>
+          <li><i class="textarea"></i>Textarea</li>
+          <li><i class="slider"></i>Slider</li>
+          <li><i class="range"></i>Range</li>
+        </ul>
+      </div>
+    </div>
+    <!--//component-->
+  </aside>
+  <!--content-->
+  <section class="content">
+    <!--device bar-->
+    <h3 class="device-bar">
+      <div class="choose-device">
+        Device
+        <div class="dropdown device-dropdown" id="device">
+          <a href="javascript:void(0)">iPhone5</a>
+          <ul class="dropdown-menu">
+            <li data-width="320" data-height="568">iPhone5</li>
+            <li data-width="375" data-height="667">iPhone6</li>
+            <li data-width="414" data-height="736">iPhone6 Plus</li>
+            <li data-width="360" data-height="640">360x640</li>
+            <li data-width="540" data-height="960">540x960</li>
+          </ul>
+        </div>
+      </div>
+      <div class="zoom-device">
+        <i class="orientation" id="orientation" title="ratate orientation"></i>
+        <div class="dropdown zoom-dropdown">
+          <!--<a href="javascript:void(0)">100%</a>
+          <ul class="dropdown-menu" style="display: none">
+            <li>a</li>
+          </ul>-->
+        </div>
+      </div>
+    </h3>
+    <!--mask-->
+    <div class="mask-c"></div>
+    <!--//device bar-->
+    <!--simulator-->
+    <div class="simulator-wrap">
+      <div class="simulator" style="width: 320px; height: 568px" id="simulator">
+        <div class="app-status"></div>
+        <div class="app-navbar">page</div>
+        <!--****************Canvas****************-->
+        <div class="canvas" id="canvas">
+          <!--vue comp-->
+          <component v-bind:is="comp.name"  v-on:increment="selectComp($event, comp)"  :comp="comp" v-for="comp in comps"></component>
+          <!--//vue comp-->
+        </div>
+        <!--****************//Canvas****************-->
+        
+        <!--************select box************-->
+        <div class="select-box">
+          <i @click="removeComp()" title="delete component">&times;</i>
+          <span @click="hideSelBox()" title="hide maskbox"></span>
+        </div>
+        <!--//************select box************-->
+      </div>
+    </div>
+    
+    <!--//simulator-->
+  </section>
+  
+  <!--//content-->
+  <!--proerty-->
+  <aside class="property">
+    <h3 class="title path">
+      <a href="#">index</a> <label>/</label> Button
+    </h3>
+    <div class="property-list">
+      <!--**************panel-button-property**************-->
+      <div v-if=" panelProp == 'btnComp'">
+        <!--Link-->
+        <div class="pro-item">
+          <h3>
+            Link <span class="caret"></span>
+          </h3>
+          <div class="pro-box"> 
+            <div class="form-group">
+              <select class="select">
+                <option value="">select page</option>
+                <option value="">list</option>
+                <option value="">article</option>
+                <option value="">contact</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!--Text-->
+        <div class="pro-item">
+          <h3>
+            Text <span class="caret"></span>
+          </h3>
+          <div class="pro-box">
+            <div class="form-group">
+              <input type="text" class="c-ipt" v-model="comps[compIdx].text">
+            </div>
+          </div>
+        </div>
+        <!--Style-->
+        <div class="pro-item">
+          <h3>
+            Style <span class="caret"></span>
+          </h3>
+          <div class="pro-box">
+            <div class="form-group">
+              <label>Class</label>
+              <div>
+                <select class="select" v-model="comps[compIdx].class">
+                  <option :value="cls" v-for="cls in classes">{{cls}}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Size</label>
+              <div>
+                <select class="select">
+                  <option value="">default</option>
+                  <option value="">large</option>
+                  <option value="">small</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--//**************//panel-button-property**************-->
+      <!--**************panel-html-property **************-->
+      <div v-if=" panelProp == 'htmlComp'">
+        <!--html-->
+        <div class="pro-item" @click="toggleCls">
+          <h3>
+            html <span class="caret"></span>
+          </h3>
+          <div class="pro-box"> 
+            <textarea v-model="comps[compIdx].vhtml" class="codeMirror opa1"></textarea>
+          </div>
+        </div>
+        <!--css-->
+        <div class="pro-item" @click="toggleCls">
+          <h3>
+            css <span class="caret"></span>
+          </h3>
+          <div class="pro-box"> 
+            <textarea v-model="comps[compIdx].vcss" class="codeMirror" @scroll="codeScroll"></textarea>
+            <span class="codeMirror codeMask" v-code-highlight="comps[compIdx].vcss"></span>
+            <div class="attention">/*禁止光标在最后一行结尾处回车*/</div>
+            <em title="fullscreen" class="icon-h fullscreen" @click="fullscreen"></em>
+          </div>
+        </div>
+      </div>
+      <!--//**************panel-html-property**************-->
+    </div>
+  </aside>
+  <!--//proerty-->
+</section>
+<!--//container-->
+
+
+   
+<script src="js/vue.js"></script>
+<script src="js/codeHightLight.js"></script>
+<script>
+
+/******************按钮组件******************/
+var ButtonComp = {
+      props: ["comp"],
+      template: `
+                  <a href="#" 
+                     class="sm-btn"
+                     v-bind:class="comp.class"
+                     v-bind:id="comp.id"
+                     v-on:click = "increment" >
+                     {{ comp.text }}
+                  </a>
+                `,
+  
+      methods: {
+        increment: function(event){
+          this.$emit('increment', event)  //触发v-on:increment，并传回当前对象event
+        }
+      }
+    }
+
+/******************自定义html组件******************/
+var HtmlComp = {
+      props: ["comp"],
+      template: ` 
+                  <div class="html-box" v-on:click = "increment" >
+                   <span v-html="comp.vcss"></span>
+                   <span v-html="comp.vhtml"></span>
+                  </div>
+                `,
+      methods: {
+        increment: function(event){
+          this.$emit('increment', event)  
+        }
+      }
+    }
+
+/*----------利用自定义指令处理高亮css代码----------*/
+Vue.directive('codeHighlight', {
+  bind(el, binding) {
+    var code = binding.value
+    el.innerHTML = codeHightLight(code)
+  },
+  update(el, binding){
+    var code = binding.value
+    el.innerHTML = codeHightLight(code)
+  }
+})
+
+/******************创建vue实例******************/
+    
+var vm = new Vue({
+  el: '#app',
+  components: {
+    btnComp: ButtonComp,
+    htmlComp: HtmlComp
+  },
+  data:{
+    compIdx: 0,
+    panelProp: "btnComp",
+    comps: Store.fetch(),
+    classes:["primary", "warning"],
+    code: ""
+  },
+  /*监听组件列表*/
+  watch: {
+    comps: {
+       handler: function(comps){
+          Store.save(comps)
+       },
+       deep: true
+    }
+  },
+  methods:{
+
+    //添加按钮组件
+    addBtnComp(comp, classname, text){
+       this.comps.splice((this.comps.length-1), 0, {
+           name: comp,
+           class: classname,
+           text: text + this.comps.length,
+           id: this.comps.length
+         })
+    },
+    
+    //添加html组件
+    addHtmlComp(comp){
+       this.comps.splice((this.comps.length-1), 0, {
+           name: comp,
+           vhtml: `<div class='box'>
+请在右边编辑框中插入html,实时预览效果 →
+</div>`,
+           vcss: `<style>
+.box{
+  font-size: 12px;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #fff;
+  border: 1px dashed #0cf;
+}
+</style>`
+         })
+    },
+    //删除组件
+    removeComp(){
+      this.comps.splice(this.compIdx,1)
+      $(".select-box").hide()
+    },
+
+    //隐藏select-box
+    hideSelBox(){
+      $(".select-box").hide()
+    },
+
+    //选择组件
+    selectComp(event, obj){
+      var ele = $(event.target)
+       
+      if(ele.parents(".html-box")[0]){ //捕获html片段的父元素,select-box可以选中这个组件所有
+        ele = ele.parents(".html-box")
+      } 
+      $(".select-box").show()
+                      .css("top", ele.offset().top + "px")
+                      .css("left", ele.offset().left + "px")
+                      .css("width", ele.outerWidth() + "px")
+                      .css("height", ele.outerHeight() + "px")
+      this.compIdx = this.comps.indexOf(obj)
+      
+      //选中组件的样式
+      this.selectedCls = this.comps[this.compIdx].class
+      
+      //切换属性面板
+      this.panelProp = this.comps[this.compIdx].name
+      
+      
+    },
+    
+    //属性展开收缩
+    toggleCls(event){
+      var ele = $(event.target)
+      ele.parent().toggleClass("category-toggle")
+    },
+    
+    //监听html编辑器文本框滚动
+    codeScroll(event){
+      var ele = $(event.target)
+      var domsctop = ele.scrollTop()
+      var domscleft = ele.scrollLeft()
+      $(".codeMask").scrollTop(domsctop).scrollLeft(domscleft)
+    },
+    
+    //html编辑框全屏
+    fullscreen(){
+      $(".content").toggleClass("fs-cnt")
+      $(".property").toggleClass("fs-prop")
+      $(".fullscreen").toggleClass("fs-reset")
+      this.hideSelBox()
+    }
+  }
+})
+
+</script>
+</body>
+</html>
