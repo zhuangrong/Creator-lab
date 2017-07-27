@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Document</title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<link rel="stylesheet" href="../css/creator.css">
+<style>
+ 
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!--pages-->
+    <div class="pages">
+      <h3 class="title"><button v-on:click="addPage"><i class="new-page"></i>Add Page</button></h3>
+      <div class="page-list">
+        <ul>
+          <li v-for="file in files" >
+            <a href="#"  @click="nameEdit">{{file.name}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <!--//pages-->
+</div>
+
+<!--js-->
+<script src="../js/vue.js"></script>
+<script>
+/*=====================
+  文件列表，文件名可编辑，文件名放在一个数组中
+======================*/
+
+// vue实例 
+ var vm = new Vue({
+      el: "#app",
+      data:{
+        files: [
+          { name: "index" },
+          { name: "about" }
+        ],
+      },
+      methods:{
+        addPage(){
+          this.files.push({"name": "news"})
+        },
+        nameEdit(){
+          var $elm = $(event.target)
+          $elm.attr("contenteditable", true)
+        }
+      }
+    });
+</script>
+</body>
+</html>
