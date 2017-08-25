@@ -82,21 +82,16 @@ console.log(arr2) //[1,2,5,3,4]
     'el':'#dragCon',
     data:{  
         peopledata:[{
-        id:1,
-        name:'item00'
-       },{
-        id:2,
-        name:'item01'
-       },{
-        id:3,
-        name:'item02 '
-       },{
-        id:4,
-        name:'item03 '
-       },{
-        id:5,
-        name:'item04'
-       }]
+          name:'item00'
+         },{
+          name:'item01'
+         },{
+          name:'item02 '
+         },{
+          name:'item03 '
+         },{
+          name:'item04'
+         }]
  
     },
     mounted:function(){
@@ -124,6 +119,7 @@ console.log(arr2) //[1,2,5,3,4]
         //当前拖动的对象
         dom = event.currentTarget
         $(dom).css({"border":"1px solid #5bc0de","opacity":".8"});
+        beforeIdx = $(dom).index()
       },
       drop:function(event){
         //拖放经过的对象，只匹配父级元素.drag-div，忽略子元素，保证添加在.drag-div的前
@@ -141,6 +137,12 @@ console.log(arr2) //[1,2,5,3,4]
         //拖动结束时，设置拖动对象的样式
         var ele = $(event.target).closest(".drag-div")
         ele.css({"border":"1px solid #5bc0de", "opacity":"1"});
+        
+        //交互data中的数据
+        var arr = this.peopledata
+        var afterIdx = ele.index()
+        console.log(beforeIdx+"&"+afterIdx)
+        arr.splice(beforeIdx, 0, arr.splice(afterIdx, 1)[0])
         ele.before(dom);
       }
      }
