@@ -88,11 +88,13 @@
    <button v-on:keyup.delete = "delDom"></button>
    
    <!--组件-->
+   <h3 class="titlex">3、组件</h3>
    <simple-counter></simple-counter>
    <simple-counter v-bind:msg="1"></simple-counter>
    <child my-msg="todoaa" ></child>
-   <child v-bind:my-msg="todo" v-for="todo in todos" ></child>
+   <child v-bind:my-msg="todo" v-for="todo in todos" ></child> 
    
+   <h3 class="titlex">4、组件-自定义事件</h3>
    <!--自定义事件$on ,$emit， 父组件是使用 props 传递数据给子组件，子组件要把数据传递回去用自定义事件-->
    <p>{{total}}</p>
    <button-counter v-on:increment="incrementTotal"></button-counter>

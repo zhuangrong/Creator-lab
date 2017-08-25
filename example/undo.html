@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Document</title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+
+<script>
+
+
+
+
+</script>
+</head>
+<body>
+<div id="example">
+    
+  <button @click="undoThis">undo</button>
+  <p></p>
+  <input
+    v-model="newTodoText"
+    v-on:keyup.enter="addNewTodo">
+  <ul>
+    <li
+      is="todo-item"
+      v-for="(todo, index) in todos"
+      v-bind:title="todo"
+      v-on:remove = "remove(todo)"
+      
+    ></li>
+  </ul>
+
+    
+ 
+</div>
+<script src="../js/vue.js"></script>
+<script>
+  Vue.component('todo-item', {
+  template: `
+    <li>
+      {{ title }}
+      <button v-on:click="$emit(\'remove\')">X</button>
+    </li>\
+   `,
+  props: ['title']
+})
+  //创建实例
+      var vm = new Vue({
+        el: '#example',
+        data: {
+          newTodoText: '',
+          todos: [
+            '1Do the dishes',
+            '2Take out the trash',
+            '3Mow the lawn'
+          ],
+          /**
+           * 1、将删除信息存放于undo对象中，
+           * 2、撤消时重新添加数据到todos中
+           */
+          undo: {}
+        },
+        methods: {
+          addNewTodo: function () {
+            this.todos.push(this.newTodoText)
+            this.newTodoText = ''
+          },
+          //删除数组中对应项目
+          remove: function(arr){
+            var idx = this.todos.indexOf(arr)
+            //存储删除的信息
+            this.undo['index'] = idx
+            this.undo['info'] = this.todos[idx]
+            
+            this.todos.splice(idx,1)
+          },
+          undoThis: function(){
+            this.todos.splice(this.undo.index, 0, this.undo.info)
+          }
+        }
+      })
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta charset="utf-8">
+<title></title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+ 
+<style>
+.select-item {
+ background-color: #5bc0de;
+ display: inline-block;
+ text-align: center;
+ border-radius: 3px;
+ margin-right: 10px;
+ cursor:pointer;
+ padding: 6px 20px;
+ color: #fff;
+}
+ .cursored{
+ cursor: default;
+}
+.project-content,.people-content {
+  padding: 150px 150px 0;
+  width: 200px;
+}
+.people-content {
+  margin-top: 30px;
+}
+.drag-div {
+  border: 1px solid #5bc0de;
+  padding:10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  background-color: #fff;
+}
+.select-project-item {
+  display: inline-block;
+  text-align: center;
+  border-radius: 3px;
+}
+.drag-people-label{
+ margin-bottom:0;
+ padding-right:10px;
+}
+</style>
+<script>
+  
+let arr = [1, 2, 3, 4, 5]
+let arr2 = [1, 2, 3, 4, 5]
+
+// 交换第三个和第五个元素  x < y
+let x = 3, y = 5
+arr.splice(x-1, 1, ...arr.splice(y-1, 1, arr[x-1]))
+console.log(arr) //[1,2,5,4,3]
+
+
+// 第五个元素插入第三个元素前
+arr2.splice(x-1, 0, arr2.splice(y-1, 1)[0])
+console.log(arr2) //[1,2,5,3,4]
+
+
+</script>
+</head>
+<body>
+ 
+<div class='drag-content' id="dragCon" >
+ <div class='people-content'>
+  <div class='drag-div' :id="index" v-for="(ppdt, index) in peopledata"  draggable='true' @dragstart.stop='drag($event)' @dragend.prevent="handleDragend($event)"  @drop.stop='drop($event)' @dragover.prevent='handleDragover($event)'>
+   <div class='select-project-item'>
+    <label class='drag-people-label'>{{ppdt.name}}:</label>
+   </div>
+  </div>
+ </div>
+</div>
+<script src="../js/vue.js"></script>
+<script type="text/javascript">
+  var dom;
+  var ss = new Vue({
+    'el':'#dragCon',
+    data:{  
+        peopledata:[{
+        id:1,
+        name:'item00'
+       },{
+        id:2,
+        name:'item01'
+       },{
+        id:3,
+        name:'item02 '
+       },{
+        id:4,
+        name:'item03 '
+       },{
+        id:5,
+        name:'item04'
+       }]
+ 
+    },
+    mounted:function(){
+      this.$nextTick(function(){
+         
+      })
+    },
+     watch:{
+      projectdatas:{
+        handler:function(val,oldval){
+ 
+        },
+        deep:true
+      },
+      peopledata:{
+        handler:function(val,oldval){
+ 
+        },
+        deep:true
+      }
+    },
+ 
+    methods: {
+      drag:function(event){
+        //当前拖动的对象
+        dom = event.currentTarget
+        $(dom).css({"border":"1px solid #5bc0de","opacity":".8"});
+      },
+      drop:function(event){
+        //拖放经过的对象，只匹配父级元素.drag-div，忽略子元素，保证添加在.drag-div的前
+        var ele = $(event.target).closest(".drag-div")
+        
+      },
+      handleDragover:function(event){ 
+        //拖动经过时，添加拖动对象
+        var ele = $(event.target).closest(".drag-div")
+        ele.before(dom);
+        //拖动经过时，设置拖动对象的样式
+        $(dom).css({"border":"1px dashed #5bc0de", "opacity":".8"});
+      },
+      handleDragend:function(event){
+        //拖动结束时，设置拖动对象的样式
+        var ele = $(event.target).closest(".drag-div")
+        ele.css({"border":"1px solid #5bc0de", "opacity":"1"});
+        ele.before(dom);
+      }
+     }
+ 
+  });
+ 
+ 
+</script>
+</body>
+</html>
