@@ -9,6 +9,9 @@
 <meta name="description" content="" />
  
 <style>
+  html,body{
+    height: 100%;
+  }
 .select-item {
  background-color: #5bc0de;
  display: inline-block;
@@ -22,12 +25,12 @@
  .cursored{
  cursor: default;
 }
-.project-content,.people-content {
-  padding: 150px 150px 0;
-  width: 200px;
-}
 .people-content {
-  margin-top: 30px;
+  width: 300px;
+  float: left;
+  padding: 30px;
+  margin-left: 200px;
+  background-color: #f8f8f8;
 }
 .drag-div {
   border: 1px solid #5bc0de;
@@ -35,6 +38,8 @@
   margin-bottom: 10px;
   cursor: pointer;
   background-color: #fff;
+  transition: all 1s linear;
+  font-size: 28px;
 }
 .select-project-item {
   display: inline-block;
@@ -45,52 +50,69 @@
  margin-bottom:0;
  padding-right:10px;
 }
+/*comps*/
+  .comps{
+    float: left;
+    width: 300px;
+    height: 900px;
+    background-color: #eee;
+    padding: 30px;
+  }
+  .comps .comp-item{
+    display: block;
+    width: 100px;
+    height: 100px;
+    background-color: #0cc;
+  }
 </style>
 <script>
   
-let arr = [1, 2, 3, 4, 5]
-let arr2 = [1, 2, 3, 4, 5]
+//let arr = [1, 2, 3, 4, 5]
+//let arr2 = [0, 1, 2, 3, 4]
 
 // 交换第三个和第五个元素  x < y
-let x = 3, y = 5
-arr.splice(x-1, 1, ...arr.splice(y-1, 1, arr[x-1]))
-console.log(arr) //[1,2,5,4,3]
+//let x = 1, y = 3
+//arr.splice(x-1, 1, ...arr.splice(y-1, 1, arr[x-1]))
+//console.log(arr) //[1,2,5,4,3]
 
 
 // 第五个元素插入第三个元素前
-arr2.splice(x-1, 0, arr2.splice(y-1, 1)[0])
-console.log(arr2) //[1,2,5,3,4]
+//arr2.splice(y-1, 0, arr2.splice(x-1, 1)[0])
+//console.log(arr2) //[1,2,5,3,4]
 
 
 </script>
 </head>
 <body>
- 
-<div class='drag-content' id="dragCon" >
- <div class='people-content'>
+
+<div id="dragCon" style="opacity: .5">
+  <div class="comps">
+    <div class="comp-item" draggable='true' @dragstart.stop='dragItem($event)' @dragend.prevent="dragendItem($event)"></div>
+  </div>
+  <div class='people-content' @dragover.prevent='' >
   <div class='drag-div' :id="index" v-for="(ppdt, index) in peopledata"  draggable='true' @dragstart.stop='drag($event)' @dragend.prevent="handleDragend($event)"  @drop.stop='drop($event)' @dragover.prevent='handleDragover($event)'>
    <div class='select-project-item'>
-    <label class='drag-people-label'>{{ppdt.name}}:</label>
+    <label class='drag-people-label'>{{ppdt.name}}</label>
    </div>
   </div>
  </div>
 </div>
 <script src="../js/vue.js"></script>
 <script type="text/javascript">
-  var dom;
-  var ss = new Vue({
+
+  var vm = new Vue({
     'el':'#dragCon',
     data:{  
         peopledata:[{
-          name:'item00'
+          name:'0'
          },{
-          name:'item01'
+          name:'1'
          },{
-          name:'item02 '
+          name:'2'
          },{
-          name:'item03 '
+          name:'3'
          },{
-          name:'item04'
+          name:'4'
          }]
  
     },
@@ -118,33 +140,76 @@ console.log(arr2) //[1,2,5,3,4]
       drag:function(event){
         //当前拖动的对象
         dom = event.currentTarget
-        $(dom).css({"border":"1px solid #5bc0de","opacity":".8"});
-        beforeIdx = $(dom).index()
+        domId = $(dom).attr("id")
+        $clonedom = $(dom).clone(true)
+        cloneId =  $clonedom.attr("id")
+//        cloneId++  补充刚拖动时就被减1了，
+//        dragDirect = "default"
       },
       drop:function(event){
         //拖放经过的对象，只匹配父级元素.drag-div，忽略子元素，保证添加在.drag-div的前
-        var ele = $(event.target).closest(".drag-div")
+        
+       
+      },
+      /*
+       * 拖动组件
+       */
+      
+      dragItem:function(event){
+        var newNum = this.peopledata.length + 1
+        var ele = $(event.target)
+        dom = $("<div class='drag-div' id=" + newNum + "><div class='select-project-item'><label class='drag-people-label'>6</label></div></div>")
+        domId = $(dom).attr("id")
+        $clonedom = $(dom).clone(true)
+        cloneId =  $clonedom.attr("id")
+      },
+      dragendItem:function(){
+        $clonedom.remove()
+        this.peopledata.splice(overId, 0, {"name": "6"}) 
         
       },
       handleDragover:function(event){ 
+        
         //拖动经过时，添加拖动对象
         var ele = $(event.target).closest(".drag-div")
-        ele.before(dom);
+        overId = ele.attr("id")
+        $(dom).hide()
+       
+        if(cloneId < overId){
+          ele.after($clonedom[0])
+          cloneId++
+        }else{
+          ele.before($clonedom[0])
+          cloneId--
+        }
+       
         //拖动经过时，设置拖动对象的样式
-        $(dom).css({"border":"1px dashed #5bc0de", "opacity":".8"});
+        $clonedom.css({"border":"1px dashed #5bc0de","opacity":"0.5"});
+        console.log("cloneId=" + cloneId + " &overId=" + overId + " &domId=" + domId)
       },
+      
       handleDragend:function(event){
         //拖动结束时，设置拖动对象的样式
         var ele = $(event.target).closest(".drag-div")
         ele.css({"border":"1px solid #5bc0de", "opacity":"1"});
         
-        //交互data中的数据
-        var arr = this.peopledata
-        var afterIdx = ele.index()
-        console.log(beforeIdx+"&"+afterIdx)
-        arr.splice(beforeIdx, 0, arr.splice(afterIdx, 1)[0])
-        ele.before(dom);
-      }
+        $clonedom.remove()
+        $(dom).show()
+        
+        this.peopledata.splice(overId, 0, this.peopledata.splice(domId, 1)[0])
+        
+       
+        
+        //console.log
+        this.peopledata.forEach(function(val){
+            console.log(val.name)
+        })        
+        console.log("****************")
+        console.log("1111*")
+        
+      },
+      
+      
      }
  
   });
