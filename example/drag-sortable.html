@@ -153,7 +153,6 @@
        */
       dragItem:function(event){
         var newNum = this.peopledata.length
-        var ele = $(event.target)
         dom = $("<div class='drag-div' id=" + newNum + "><div class='select-project-item'><label class='drag-people-label'>" + newNum + "</label></div></div>")
         domId = $(dom).attr("id")
         $clonedom = $(dom).clone(true)
@@ -186,15 +185,14 @@
       },
       
       handleDragend:function(event){
-        //拖动结束时，设置拖动对象的样式
-        var ele = $(event.target).closest(".drag-div")
-        ele.css({"border":"1px solid #5bc0de", "opacity":"1"});
-        
         $clonedom.remove()
         $(dom).show()
-        
         this.peopledata.splice(cloneIndex, 0, this.peopledata.splice(domId, 1)[0])
-        
+        //console.log
+//        this.peopledata.forEach(function(val){
+//            console.log(val.name)
+//        }) 
+//        console.log("**************")
       },
       
       
