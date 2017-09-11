@@ -76,6 +76,7 @@
 //console.log(arr) //[1,2,5,4,3]
 
 
+
 // 第五个元素插入第三个元素前
 //arr2.splice(y-1, 0, arr2.splice(x-1, 1)[0])
 //console.log(arr2) //[1,2,5,3,4]
@@ -87,7 +88,7 @@
 
 <div id="dragCon" style="opacity: .5">
   <div class="comps">
-    <div class="comp-item" draggable='true' @dragstart.stop='dragItem($event)' @dragend.prevent="dragendItem($event)"></div>
+    <div class="comp-item" draggable='true' @dragstart.stop='dragItem($event)' @dragend.prevent="dragendItem($event)">组件</div>
   </div>
   <div class='people-content' @dragover.prevent='' >
   <div class='drag-div' :id="index" v-for="(ppdt, index) in peopledata"  draggable='true' @dragstart.stop='drag($event)' @dragend.prevent="handleDragend($event)"  @drop.stop='drop($event)' @dragover.prevent='handleDragover($event)'>
@@ -143,29 +144,25 @@
         domId = $(dom).attr("id")
         $clonedom = $(dom).clone(true)
         cloneId =  $clonedom.attr("id")
-//        cloneId++  补充刚拖动时就被减1了，
-//        dragDirect = "default"
       },
       drop:function(event){
         //拖放经过的对象，只匹配父级元素.drag-div，忽略子元素，保证添加在.drag-div的前
-        
-       
       },
       /*
        * 拖动组件
        */
-      
       dragItem:function(event){
-        var newNum = this.peopledata.length + 1
+        var newNum = this.peopledata.length
         var ele = $(event.target)
-        dom = $("<div class='drag-div' id=" + newNum + "><div class='select-project-item'><label class='drag-people-label'>6</label></div></div>")
+        dom = $("<div class='drag-div' id=" + newNum + "><div class='select-project-item'><label class='drag-people-label'>" + newNum + "</label></div></div>")
         domId = $(dom).attr("id")
         $clonedom = $(dom).clone(true)
-        cloneId =  $clonedom.attr("id")
+        cloneId = $clonedom.attr("id")
+        cloneIndex = $clonedom.index()
       },
       dragendItem:function(){
         $clonedom.remove()
-        this.peopledata.splice(overId, 0, {"name": "6"}) 
+        this.peopledata.splice(cloneIndex, 0, {"name": this.peopledata.length}) 
         
       },
       handleDragover:function(event){ 
@@ -174,7 +171,6 @@
         var ele = $(event.target).closest(".drag-div")
         overId = ele.attr("id")
         $(dom).hide()
-       
         if(cloneId < overId){
           ele.after($clonedom[0])
           cloneId++
@@ -185,7 +181,8 @@
        
         //拖动经过时，设置拖动对象的样式
         $clonedom.css({"border":"1px dashed #5bc0de","opacity":"0.5"});
-        console.log("cloneId=" + cloneId + " &overId=" + overId + " &domId=" + domId)
+        cloneIndex =  $clonedom.index("div.drag-div:visible")
+        
       },
       
       handleDragend:function(event){
@@ -196,16 +193,7 @@
         $clonedom.remove()
         $(dom).show()
         
-        this.peopledata.splice(overId, 0, this.peopledata.splice(domId, 1)[0])
-        
-       
-        
-        //console.log
-        this.peopledata.forEach(function(val){
-            console.log(val.name)
-        })        
-        console.log("****************")
-        console.log("1111*")
+        this.peopledata.splice(cloneIndex, 0, this.peopledata.splice(domId, 1)[0])
         
       },
       
