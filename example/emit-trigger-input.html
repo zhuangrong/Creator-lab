@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Document</title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <h3>案例：将外部选择的值value通过click事件的触发，赋值到data中</h3>
+  {{clothes}}
+  <h3>用v-model</h3>
+  <input type="text" v-model="clothes">
+  <p></p>
+  <p>用v-on:click=" clothes = $event.target.value"</p>
+  <input type="text" id="ipt" v-model="clothes" v-on:click=" clothes = $event.target.value">
+  <button @click="select($event)" title="点击将值复制到数据clothes">短袖</button>
+</div>
+<script src="../js/vue.js"></script>
+
+<script>
+
+var vm = new Vue({
+  el: '#app',
+  data:{
+    clothes: "长袖"
+  },
+  methods: {
+    increment: function(){
+      console.log("a")
+    },
+    select: function(event){
+      var $el = $(event.target)
+      $el.prev().val($el.text())
+      $el.prev().trigger('click'); 
+    },
+    
+  }
+})
+
+
+
+
+</script>
+</body>
+</html>

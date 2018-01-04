@@ -47,6 +47,10 @@
 [v-cloak]{
   display:none;
 }
+  [draggable]{
+    border: 3px solid  #000;
+    opacity: 1;
+  }
 </style>
 </head>
 <body>
@@ -134,7 +138,7 @@
         var ele = $(event.target).closest(".drag-div")
         ele.before(dom);
         //拖动经过时，设置拖动对象的样式
-        $(dom).css({"border":"1px dashed #ddd", "opacity":".5"});
+        $(dom).css({"border":"3px dashed #ddd", "opacity":".5"});
       },
       handleDragend:function(event){
         //拖动结束时，设置拖动对象的样式

@@ -5,6 +5,14 @@
 <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <title>Document</title>
 <script src="../js/jquery-3.2.1.min.js"></script>
+<script>
+  
+  $(function(){
+    $("#vif").on("click",function(){
+      console.log("?a")
+    })
+  })
+</script>
 <style>
 /*属性展开隐藏*/
   .pro-item{
@@ -60,7 +68,7 @@
    <span v-bind:title="msg">鼠标滑过</span>
    
     <!--v-if-->
-   <div v-if="seen">seen</div>
+   <div id="vif" v-if="seen">seen</div>
    
    
    <!--v-for-->
@@ -129,18 +137,25 @@
    <input type="text" v-bind:value="lastName" v-on:input=" lastName = $event.target.value">
    {{lastName}}
    
-    
+  <button @click="vif">点击事件</button>
   
    
+   <!--7 v-model传值到输入框-->
+   <h3 class="titlex">7、v-model传值到输入框</h3>
+   <input type="text" id="txt2" placeholder="change" >
+   <input type="text" id="txts" v-model="msg" >{{msg}}
+   <button @click="nokeyup">传值到输入框，非输入触发</button>
    
+   <!--8 v-model用v-on:input自定义事件-->
+   <h3 class="titlex">8、v-model用v-on:input自定义事件</h3>
+   <input type="text" id="txt3" v-bind:value="msg" v-on:input=" msg = updateValue($event.target.value)" >{{msg}}
+   <button @click="updateValue" title="msg">触发input事件</button>
 </div>
 
 <script src="../js/vue.js"></script>
 
 <script>
-$(function(){
 
-})
 
 //指令-自定义指令
 Vue.directive('focus',{
@@ -225,7 +240,8 @@ var vm = new Vue({
         var names = newValue.split(' ')
         this.firstName = names[0]
         this.lastName = names[names.length - 1]
-      }
+      },
+      
     }
   },
   methods: {
@@ -240,8 +256,36 @@ var vm = new Vue({
     /*切换样式*/
     toggleCls: function(){
       this.cls = !this.cls
-    }
+    },
+    vif: function(){
+      this.seen = !this.seen
+    },
+    //nokeyup
+    nokeyup: function() {
+      $("#txts")[0].value = "a"
+      //通过trigger输入框的input 事件，是触发是事件
+      $("#txt2").trigger('input'); 
+      $("#txt3")[0].value  = "333333"
+      console.log("33")
+    },
+    //triggerInput
+    updateValue: function(value) {
+      return value + ".html"
+      //this.$emit('input')
+    },
   }
+})
+$(function(){
+  //#txt2 触发输入框的input事件
+  $("#txt2").on('input', function(){
+    $("#txt2").val("change2c"); 
+    
+  })
+  //#txt3 触发输入框的input事件
+  $("#txt3").on('input', function(){
+    //$("#txt3").val("txt3"); 
+    
+  })
 })
 </script>
 </body>
