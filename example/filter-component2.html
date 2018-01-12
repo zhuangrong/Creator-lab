@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Document</title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h3>父组件向子组件传值，子组件过滤此值，并生成数组</h3>
+    <div>
+      父组件值option: <input type="text" class="ipt" v-model="comps[0].options">
+    </div>
+    <component v-bind:is="comp.name"  :comp="comp"  v-for="(comp, index) in comps"></component>
+</div>
+<script src="../js/vue.js"></script>
+
+<script>
+//  定义组件
+var OptionComp = {
+  props: ["comp", "id"],
+  template:`<div>
+<p>1、子组件获值：{{filteroption2}}</p>
+<p>2、通过过滤生成下拉框选项 
+  <select>
+    <option v-for="opt in selectOption" >{{opt}}</option>
+  </select>
+</p>
+</div>`,
+  computed:{
+    filteroption2:function(){
+      return this.comp.options
+    },
+    //下拉框选项
+    selectOption:function(){
+      return this.comp.options.split("-")
+    }
+  }
+}
+
+
+var vm = new Vue({
+  el: '#app',
+  components: {
+    optionComp: OptionComp
+  },
+  data:{
+    comps:[{name: "optionComp",options: "中文2-英文222"}]
+  }
+})
+</script>
+</body>
+</html>

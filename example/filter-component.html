@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Document</title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h3>1、通过计算属性过滤输入框的值，v-for不能直接用过滤，需要计算返回一个值</h3>
+    <h5>案例：用"-"过滤字符串，生成数组</h5>
+    <div>
+      option: <input type="text" class="ipt" v-model="option"> {{option}}
+    </div>
+    <ul>
+      <li v-for="newOption in filteroption">{{newOption}}</li>
+    </ul>
+</div>
+<script src="../js/vue.js"></script>
+
+<script>
+var OptionComp = {
+  
+}
+var vm = new Vue({
+  el: '#app',
+  data:{
+    option:"中文-英文"
+  },
+  computed:{
+    filteroption:function(){
+      return this.option.split("-")
+    }
+  }
+})
+</script>
+</body>
+</html>
