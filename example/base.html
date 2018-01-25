@@ -98,7 +98,7 @@
    <!--组件-->
    <h3 class="titlex">3、组件</h3>
    <simple-counter></simple-counter>
-   <simple-counter v-bind:msg="1"></simple-counter>
+   <simple-counter v-bind:msg="1" val="value none :"></simple-counter>
    <child my-msg="todoaa" ></child>
    <child v-bind:my-msg="todo" v-for="todo in todos" ></child> 
    
@@ -149,6 +149,20 @@
    <h3 class="titlex">8、v-model用v-on:input自定义事件</h3>
    <input type="text" id="txt3" v-bind:value="msg" v-on:input=" msg = updateValue($event.target.value)" >{{msg}}
    <button @click="updateValue" title="msg">触发input事件</button>
+   
+   <!--9 disabled-->
+   <h3 class="titlex">9、button disabled</h3>
+   <button :disabled="dis">禁用</button>
+   <button v-on:click="greet">Greet</button>
+   
+   <!--10 复选框绑定 true-value 或false value-->
+   <h3 class="titlex">10、复选框绑定 true-value 或false value,</h3>
+   <label ><input type="checkbox" v-model="toggle2"  true-value="yes "  false-value="no ">绑定true-value1</label>
+   <p>选中的值：{{toggle2}}</p>
+   <p>没选中也可以绑定值，value属性则无效了</p>
+   
+   
+   
 </div>
 
 <script src="../js/vue.js"></script>
@@ -186,11 +200,12 @@ Vue.component('button-counter',{
   
 // 组件
   Vue.component('simple-counter',{
-    props: ['msg'],
+    props: ['msg', 'val'],
     template: `
               <div>
                 <button v-on:click = " counter += 1 "> {{ counter }}</button>
                 <span> {{msg}} </span>
+                <span> {{val}} </span>
               </div>
               `,
     data(){
@@ -226,6 +241,7 @@ var vm = new Vue({
     selected: "c",
     cls: true,  /*切换样式toggleClass*/
     val: "test",
+    toggle2: "",
     sex: "男"
   },
   computed: {
@@ -272,6 +288,14 @@ var vm = new Vue({
       return value + ".html"
       //this.$emit('input')
     },
+    greet: function (event) {
+      // `this` 在方法里指向当前 Vue 实例
+      alert('Hello ' + this.name + '!')
+      // `event` 是原生 DOM 事件
+      if (event) {
+        alert(event.target.tagName)
+      }
+    }
   }
 })
 $(function(){

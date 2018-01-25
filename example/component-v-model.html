@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Document</title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+
+<div id="app">
+  
+   <currency-input v-model="price"></currency-input>
+   <!--
+     *以上组件相当于有input事件和 绑定 value
+     *   <currency-input :value="price" v-on:input="price=$event.target.value"></currency-input>
+   -->
+   {{price}}
+</div>
+<script src="../js/vue.js"></script>
+
+<script>
+Vue.component('currency-input', {
+  template:`<span><input :value="value" v-on:input="updateValue($event.target.value)"></span>`,
+  methods:{
+    updateValue:function(value){
+      
+       // 通过触发 input 事件带出数值，到父组件的price中
+      this.$emit("input", value)
+    }
+  },
+  props: ['value']
+})
+  
+var vm = new Vue({
+  el: '#app',
+  data: {
+    price: "10"
+  }
+  
+})
+</script>
+</body>
+</html>

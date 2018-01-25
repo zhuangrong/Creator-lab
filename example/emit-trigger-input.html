@@ -17,6 +17,7 @@
   <p>用v-on:click=" clothes = $event.target.value"</p>
   <input type="text" id="ipt" v-model="clothes" v-on:click=" clothes = $event.target.value">
   <button @click="select($event)" title="点击将值复制到数据clothes">短袖</button>
+  
 </div>
 <script src="../js/vue.js"></script>
 
@@ -25,7 +26,8 @@
 var vm = new Vue({
   el: '#app',
   data:{
-    clothes: "长袖"
+    clothes: "长袖",
+    shoes: "皮鞋"
   },
   methods: {
     increment: function(){
@@ -35,7 +37,7 @@ var vm = new Vue({
       var $el = $(event.target)
       $el.prev().val($el.text())
       $el.prev().trigger('click'); 
-    },
+    }
     
   }
 })
